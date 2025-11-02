@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>sample_shop_api</RootNamespace>
+    <RootNamespace>SampleShopApi</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
