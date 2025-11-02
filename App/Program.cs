@@ -14,7 +14,7 @@ if (app.Environment.IsDevelopment()) {
 app.UseHttpsRedirection();
 
 app.MapGet("/docs", () => {
-	return Results.File(File.OpenRead("./Documentation/stoplightio.html"), "text/html");
+	return Results.File(File.OpenRead("App/Documentation/stoplightio.html"), "text/html");
 })
 .WithName("Documentation")
 .WithDescription("Show API documentation using stoplightio");
