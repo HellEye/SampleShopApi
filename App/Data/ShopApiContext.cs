@@ -7,7 +7,8 @@ public partial class ShopApiContext(DbContextOptions<ShopApiContext> options)
 	: DbContext(options) {
 
 	public DbSet<Product> Products => Set<Product>();
-
+	public DbSet<Cart.Cart> Carts => Set<Cart.Cart>();
+	public DbSet<Cart.CartItem> CartItems => Set<Cart.CartItem>();
 
 	// As railway gives the connection string in a different format, we need to parse it
 	// Instead we could accept separate host, password, port, user, db env vars, but this is more convenient

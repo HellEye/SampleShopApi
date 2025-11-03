@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+using App.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Pagination;
@@ -14,6 +16,16 @@ public record class PaginatedResponse<TDto> {
 	public required int PageSize { get; set; }
 	public required int TotalPages { get; set; }
 	public required int TotalItems { get; set; }
+
+	[SetsRequiredMembers]
+	public PaginatedResponse(IEnumerable<TDto> items, int totalCount, IPaginatedQuery query) {
+		Items = items;
+		TotalCount = totalCount;
+		Page = query.Page ?? 1;
+		PageSize = query.PageSize ?? 10;
+		TotalPages = (int)Math.Ceiling(totalCount / (double)PageSize);
+		TotalItems = totalCount;
+	}
 }
 
 public static class PaginationExtensions {
@@ -29,13 +41,6 @@ public static class PaginationExtensions {
 			.ToListAsync();
 
 
-		return new() {
-			Items = items,
-			TotalCount = count,
-			Page = page,
-			PageSize = pageSize,
-			TotalPages = (int)Math.Ceiling(count / (float)pageSize),
-			TotalItems = count
-		};
+		return new(items, count, query);
 	}
 }

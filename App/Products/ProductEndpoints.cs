@@ -19,14 +19,13 @@ public static class ProductEndpoints {
 				.WithSorting(query)
 				.ToPaginated(query);
 
-
 			return Results.Ok(res);
-
 		})
 		.WithParameterValidation()
 		.WithName("GetProducts")
 		.WithDescription("Get a list of products with optional pagination, search, and sorting")
-		.Produces<PaginatedResponse<ProductDto>>(StatusCodes.Status200OK);
+		.Produces<PaginatedResponse<ProductDto>>(StatusCodes.Status200OK)
+		.ProducesProblem(StatusCodes.Status400BadRequest);
 
 		products.MapGet("/{id:int}", async (int id, ShopApiContext db) => {
 			var product = await db.Products
