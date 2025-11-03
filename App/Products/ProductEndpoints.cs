@@ -12,7 +12,10 @@ public static class ProductEndpoints {
 		products.MapGet("/", async ([AsParameters] ProductListQueryDto query, ShopApiContext db) => {
 			var res = await db.Products
 				.AsNoTracking()
-				.WithSearch(query, (p) => [p.Name, p.Description])
+				.WithSearch(query,
+					(p) => p.Name,
+					p => p.Description
+				)
 				.WithSorting(query)
 				.ToPaginated(query);
 

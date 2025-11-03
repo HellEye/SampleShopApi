@@ -7,12 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace App.Products;
 
 public record class ProductDto {
-	public int Id { get; set; }
-	public string Name { get; set; }
-	public decimal Price { get; set; }
-	public string Description { get; set; }
-
-
+	public required int Id { get; set; }
+	public required string Name { get; set; }
+	public required decimal Price { get; set; }
+	public string? Description { get; set; }
 }
 
 public enum ProductSortField {
@@ -21,11 +19,13 @@ public enum ProductSortField {
 }
 public record class ProductListQueryDto : IPaginatedQuery, ISortParams, ISearchParams {
 	[FromQuery(Name = "page")]
+	[DefaultValue(1)]
 	[Range(1, int.MaxValue)]
 	[Description("Page number")]
 	public int? Page { get; set; } = 1;
 
 	[FromQuery(Name = "pageSize")]
+	[DefaultValue(10)]
 	[Range(1, int.MaxValue)]
 	[Description("Number of items per page")]
 	public int? PageSize { get; set; } = 10;

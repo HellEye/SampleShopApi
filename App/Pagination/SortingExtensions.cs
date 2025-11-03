@@ -27,7 +27,7 @@ public static class SortingExtensions {
 	private static readonly MethodInfo OrderByDescendingMethod = typeof(Queryable).GetMethods().Single(method => method.Name == "OrderByDescending" && method.GetParameters().Length == 2);
 
 	public static IQueryable<T> WithSorting<T>(this IQueryable<T> source, ISortParams query) where T : class {
-		if (query == null || string.IsNullOrEmpty(query.Sort)) {
+		if (query == null || string.IsNullOrWhiteSpace(query.Sort)) {
 			return source;
 		}
 
@@ -36,10 +36,8 @@ public static class SortingExtensions {
 		// Find the property with the Sortable attribute matching the sort field
 		var property = entityType.GetProperties()
 			.Where(prop => {
-				if (!Attribute.IsDefined(prop, typeof(SortableAttribute))) return false;
-				var attr = prop.GetCustomAttributes(typeof(SortableAttribute), false)
-				.Cast<SortableAttribute>()
-				.First();
+				var attr = prop.GetCustomAttribute<SortableAttribute>(true);
+				if (attr is null) return false;
 				return attr.FieldName.Equals(query.Sort, StringComparison.OrdinalIgnoreCase);
 			})
 			.FirstOrDefault();
@@ -48,9 +46,9 @@ public static class SortingExtensions {
 			throw ApiException.BadRequest($"Cannot sort by field '{query.Sort}'.");
 		}
 
-		var paramterExpression = Expression.Parameter(typeof(T));
-		var orderByProperty = Expression.Property(paramterExpression, property.Name);
-		var lambda = Expression.Lambda(orderByProperty, paramterExpression);
+		var parameterExpression = Expression.Parameter(typeof(T));
+		var orderByProperty = Expression.Property(parameterExpression, property.Name);
+		var lambda = Expression.Lambda(orderByProperty, parameterExpression);
 		var genericMethod =
 		  query.Order == Order.Desc ?
 			OrderByDescendingMethod.MakeGenericMethod(typeof(T), orderByProperty.Type)

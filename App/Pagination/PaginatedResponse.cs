@@ -18,17 +18,23 @@ public record class PaginatedResponse<TDto> {
 
 public static class PaginationExtensions {
 	public static async Task<PaginatedResponse<TDto>> ToPaginated<TDto>(this IQueryable<ToDto<TDto>> source, IPaginatedQuery query) {
-		var count = source.Count();
+		var page = query.Page ?? 1;
+		var pageSize = query.PageSize ?? 10;
+
+		var count = await source.CountAsync();
+		var items = await source
+			.Skip((page - 1) * pageSize)
+			.Take(pageSize)
+			.Select(item => item.AsDto())
+			.ToListAsync();
+
+
 		return new() {
-			Items = await source
-				.Skip((query.Page ?? 1 - 1) * query.PageSize ?? 10)
-				.Take(query.PageSize ?? 10)
-				.Select(item => item.AsDto())
-				.ToListAsync(),
+			Items = items,
 			TotalCount = count,
-			Page = query.Page ?? 1,
-			PageSize = query.PageSize ?? 10,
-			TotalPages = (int)Math.Ceiling(count / (float)(query.PageSize ?? 10)),
+			Page = page,
+			PageSize = pageSize,
+			TotalPages = (int)Math.Ceiling(count / (float)pageSize),
 			TotalItems = count
 		};
 	}
