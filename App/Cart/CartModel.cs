@@ -4,7 +4,7 @@ using App.Utils;
 namespace App.Cart;
 
 public class Cart : ToDto<CartDto> {
-	public required int Id { get; set; }
+	public int Id { get; set; }
 	public required List<CartItem> Items { get; set; } = [];
 	public required DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	public required DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
@@ -16,7 +16,7 @@ public class Cart : ToDto<CartDto> {
 }
 
 public class CartItem : ToDto<CartItemDto> {
-	public required int Id { get; set; }
+	public int Id { get; set; }
 	public required int Quantity { get; set; }
 
 	public required int ProductId { get; set; }

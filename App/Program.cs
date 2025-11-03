@@ -1,8 +1,7 @@
-using System.Text.RegularExpressions;
+using App.Cart;
 using App.Data;
 using App.Exceptions;
 using App.Products;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +21,7 @@ builder.Services.AddDbContext<ShopApiContext>(options => {
 		options.EnableSensitiveDataLogging();
 	}
 });
-
+builder.Services.AddHostedService<CartCleanupService>();
 
 var app = builder.Build();
 app.UseExceptionHandler();
