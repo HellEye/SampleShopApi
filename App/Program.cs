@@ -1,17 +1,39 @@
+using System.Text.RegularExpressions;
+using App.Data;
+using App.Exceptions;
+using App.Products;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-var app = builder.Build();
+if (builder.Environment.IsDevelopment()) {
+	DotNetEnv.Env.Load();
+}
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-// Configure the HTTP request pipeline.
+
+builder.Services.AddDbContext<ShopApiContext>(options => {
+	if (builder.Environment.IsDevelopment()) {
+		options.EnableSensitiveDataLogging();
+	}
+});
+
+
+var app = builder.Build();
+app.UseExceptionHandler();
+app.MapProductEndpoints();
+
+
 if (app.Environment.IsDevelopment()) {
 	app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.MapGet("/docs", () => {
 	return Results.File(File.OpenRead("App/Documentation/stoplightio.html"), "text/html");

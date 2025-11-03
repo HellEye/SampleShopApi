@@ -1,6 +1,17 @@
 @SampleShopApi_HostAddress = http://localhost:5261
 
-GET {{SampleShopApi_HostAddress}}/weatherforecast/
+### 
+
+GET {{SampleShopApi_HostAddress}}/products?sort=price
 Accept: application/json
 
 ###
+
+POST {{SampleShopApi_HostAddress}}/products
+Content-Type: application/json
+
+{
+	"name": "New Product",
+	"price": 9.99,
+	"description": "A brand new product"
+}
