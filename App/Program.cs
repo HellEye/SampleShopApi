@@ -14,8 +14,8 @@ if (builder.Environment.IsDevelopment()) {
 }
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ShopApiContext>(options => {
 	if (builder.Environment.IsDevelopment()) {
 		options.EnableSensitiveDataLogging();
@@ -26,19 +26,23 @@ builder.Services.AddHostedService<CartCleanupService>();
 var app = builder.Build();
 app.UseExceptionHandler();
 app.MapProductEndpoints();
+app.MapCartEndpoints();
 
 
-if (app.Environment.IsDevelopment()) {
-	app.MapOpenApi();
-}
+app.MapOpenApi();
+// if (app.Environment.IsDevelopment()) {
+// }
+// app.MapSwagger();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // app.UseHttpsRedirection();
 
-app.MapGet("/docs", () => {
-	return Results.File(File.OpenRead("App/Documentation/stoplightio.html"), "text/html");
-})
-.WithName("Documentation")
-.WithDescription("Show API documentation using stoplightio");
+// app.MapGet("/docs", () => {
+// 	return Results.File(File.OpenRead("App/Documentation/stoplightio.html"), "text/html");
+// })
+// .WithName("Documentation")
+// .WithDescription("Show API documentation using stoplightio");
 
 app.Run();
 

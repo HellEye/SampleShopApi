@@ -4,11 +4,13 @@ using App.Data;
 using Microsoft.EntityFrameworkCore;
 namespace App.Cart;
 
-public class CartCleanupService(ILogger<CartCleanupService> logger, ShopApiContext dbContext) : IHostedService, IDisposable {
+public class CartCleanupService(ILogger<CartCleanupService> logger, IServiceScopeFactory scopeFactory) : IHostedService, IDisposable {
 	private Timer? timer = null;
 
 	private async void DoWork(object? state) {
 		logger.LogInformation("Starting cart cleanup task.");
+		using var scope = scopeFactory.CreateScope();
+		var dbContext = scope.ServiceProvider.GetRequiredService<ShopApiContext>();
 		var cutoff = DateTime.UtcNow.AddDays(-7);
 		var oldCarts = await dbContext.Carts
 			.Where(c => c.UpdatedAt < cutoff)
