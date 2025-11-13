@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using App.Utils;
 using Microsoft.EntityFrameworkCore;
 
-namespace App.Pagination;
+namespace SampleShopApi.App.Queries;
 
 public interface IPaginatedQuery {
 	int? Page { get; set; }

@@ -9,41 +9,41 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 #nullable disable
 
 namespace SampleShopApi.App.Data.migrations {
-	[DbContext(typeof(ShopApiContext))]
-	[Migration("20251102174759_InitialCreate")]
-	partial class InitialCreate {
-		/// <inheritdoc />
-		protected override void BuildTargetModel(ModelBuilder modelBuilder) {
+  [DbContext(typeof(ShopApiContext))]
+  [Migration("20251102174759_InitialCreate")]
+  partial class InitialCreate {
+    /// <inheritdoc />
+    protected override void BuildTargetModel(ModelBuilder modelBuilder) {
 #pragma warning disable 612, 618
-			modelBuilder
-				.HasAnnotation("ProductVersion", "9.0.10")
-				.HasAnnotation("Relational:MaxIdentifierLength", 63);
+      modelBuilder
+        .HasAnnotation("ProductVersion", "9.0.10")
+        .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-			NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+      NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-			modelBuilder.Entity("App.Products.Product", b => {
-				b.Property<int>("Id")
-					.ValueGeneratedOnAdd()
-					.HasColumnType("integer");
+      modelBuilder.Entity("SampleShopApi.App.Entities.Products.Product", b => {
+        b.Property<int>("Id")
+          .ValueGeneratedOnAdd()
+          .HasColumnType("integer");
 
-				NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+        NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-				b.Property<string>("Description")
-					.IsRequired()
-					.HasColumnType("text");
+        b.Property<string>("Description")
+          .IsRequired()
+          .HasColumnType("text");
 
-				b.Property<string>("Name")
-					.IsRequired()
-					.HasColumnType("text");
+        b.Property<string>("Name")
+          .IsRequired()
+          .HasColumnType("text");
 
-				b.Property<decimal>("Price")
-					.HasColumnType("numeric");
+        b.Property<decimal>("Price")
+          .HasColumnType("numeric");
 
-				b.HasKey("Id");
+        b.HasKey("Id");
 
-				b.ToTable("Products");
-			});
+        b.ToTable("Products");
+      });
 #pragma warning restore 612, 618
-		}
-	}
+    }
+  }
 }

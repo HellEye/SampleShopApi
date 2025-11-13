@@ -1,7 +1,7 @@
-using App.Products;
 using App.Utils;
+using SampleShopApi.App.Entities.Products;
 
-namespace App.Cart;
+namespace SampleShopApi.App.Entities.Cart;
 
 public class Cart : ToDto<CartDto> {
 	public int Id { get; set; }

@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+namespace SampleShopApi.App.Queries;
 
 public interface ISearchParams {
 	string? Search { get; set; }

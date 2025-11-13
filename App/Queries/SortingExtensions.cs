@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using App.Exceptions;
 
-namespace App.Pagination;
+namespace SampleShopApi.App.Queries;
 
 public enum Order {
 	Asc,

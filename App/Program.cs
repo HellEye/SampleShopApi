@@ -1,17 +1,15 @@
-using App.Cart;
-using App.Data;
 using App.Exceptions;
-using App.Products;
+using SampleShopApi.App.Data;
+using SampleShopApi.App.Entities;
+using SampleShopApi.App.Entities.Cart;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 if (builder.Environment.IsDevelopment()) {
 	DotNetEnv.Env.Load();
 }
+
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddEndpointsApiExplorer();
@@ -22,27 +20,18 @@ builder.Services.AddDbContext<ShopApiContext>(options => {
 	}
 });
 builder.Services.AddHostedService<CartCleanupService>();
-
+builder.Services.AddEntityServices();
 var app = builder.Build();
+
+
 app.UseExceptionHandler();
-app.MapProductEndpoints();
-app.MapCartEndpoints();
+app.MapEntityHandlers();
 
 
 app.MapOpenApi();
-// if (app.Environment.IsDevelopment()) {
-// }
-// app.MapSwagger();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// app.UseHttpsRedirection();
-
-// app.MapGet("/docs", () => {
-// 	return Results.File(File.OpenRead("App/Documentation/stoplightio.html"), "text/html");
-// })
-// .WithName("Documentation")
-// .WithDescription("Show API documentation using stoplightio");
 
 app.Run();
 

@@ -1,8 +1,6 @@
-
-using App.Cart;
-using App.Data;
 using Microsoft.EntityFrameworkCore;
-namespace App.Cart;
+using SampleShopApi.App.Data;
+namespace SampleShopApi.App.Entities.Cart;
 
 public class CartCleanupService(ILogger<CartCleanupService> logger, IServiceScopeFactory scopeFactory) : IHostedService, IDisposable {
 	private Timer? timer = null;
@@ -12,14 +10,11 @@ public class CartCleanupService(ILogger<CartCleanupService> logger, IServiceScop
 		using var scope = scopeFactory.CreateScope();
 		var dbContext = scope.ServiceProvider.GetRequiredService<ShopApiContext>();
 		var cutoff = DateTime.UtcNow.AddDays(-7);
-		var oldCarts = await dbContext.Carts
+		var oldCartsCount = await dbContext.Carts
 			.Where(c => c.UpdatedAt < cutoff)
-			.Include(c => c.Items)
-			.ToListAsync();
+			.ExecuteDeleteAsync();
 
-		dbContext.Carts.RemoveRange(oldCarts);
-		await dbContext.SaveChangesAsync();
-		logger.LogInformation("Cart cleanup task completed. Removed {Count} old carts.", oldCarts.Count);
+		logger.LogInformation("Cart cleanup task completed. Removed {Count} old carts.", oldCartsCount);
 	}
 
 	public void Dispose() => timer?.Dispose();

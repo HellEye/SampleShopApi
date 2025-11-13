@@ -1,25 +1,13 @@
-using App.Data;
-using App.Pagination;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-namespace App.Products;
+using SampleShopApi.App.Data;
+using SampleShopApi.App.Queries;
+namespace SampleShopApi.App.Entities.Products;
 
 public static class ProductEndpoints {
 	public static void MapProductEndpoints(this WebApplication app) {
 		var products = app.MapGroup("/products").WithTags("Products");
 
-		products.MapGet("/", async ([AsParameters] ProductListQueryDto query, ShopApiContext db) => {
-			var res = await db.Products
-				.AsNoTracking()
-				.WithSearch(query,
-					(p) => p.Name,
-					p => p.Description
-				)
-				.WithSorting(query)
-				.ToPaginated(query);
-
-			return Results.Ok(res);
+		products.MapGet("/", async ([AsParameters] ProductListQuery query, GetProductListHandler handler) => {
+			return Results.Ok(await handler.HandleAsync(query));
 		})
 		.WithParameterValidation()
 		.WithName("GetProducts")
@@ -27,32 +15,22 @@ public static class ProductEndpoints {
 		.Produces<PaginatedResponse<ProductDto>>(StatusCodes.Status200OK)
 		.ProducesProblem(StatusCodes.Status400BadRequest);
 
-		products.MapGet("/{id:int}", async (int id, ShopApiContext db) => {
-			var product = await db.Products
-				.AsNoTracking()
-				.FirstOrDefaultAsync(p => p.Id == id);
+		products.MapGet("/{id:int}", async (int id, GetProductByIdHandler handler) => {
+			var product = await handler.HandleAsync(id);
 
 			if (product == null) {
 				return Results.NotFound(new { Message = $"Product with ID {id} not found." });
 			}
 
-			return Results.Ok(product.AsDto());
+			return Results.Ok(product);
 		})
 		.WithName("GetProductById")
 		.WithDescription("Get a product by its ID")
 		.Produces<ProductDto>(StatusCodes.Status200OK)
 		.ProducesProblem(StatusCodes.Status404NotFound);
 
-		products.MapPost("/", async (ProductCreateDto productDto, ShopApiContext db) => {
-			var product = new Product {
-				Name = productDto.Name,
-				Price = (decimal)productDto.Price,
-				Description = productDto.Description
-			};
-
-			db.Products.Add(product);
-			await db.SaveChangesAsync();
-
+		products.MapPost("/", async (CreateProductCommand productDto, CreateProductHandler handler) => {
+			var product = await handler.Handle(productDto);
 			return Results.Created($"/products/{product.Id}", product.AsDto());
 		})
 		.WithName("CreateProduct")
@@ -60,17 +38,11 @@ public static class ProductEndpoints {
 		.WithParameterValidation()
 		.Produces<ProductDto>(StatusCodes.Status201Created);
 
-		products.MapPut("/{id:int}", async (int id, ProductCreateDto productDto, ShopApiContext db) => {
-			var product = await db.Products.FindAsync(id);
+		products.MapPut("/{id:int}", async (int id, CreateProductCommand productDto, UpdateProductHandler handler) => {
+			var product = await handler.Handle(id, productDto);
 			if (product == null) {
 				return Results.NotFound(new { Message = $"Product with ID {id} not found." });
 			}
-
-			product.Name = productDto.Name;
-			product.Price = productDto.Price;
-			product.Description = productDto.Description;
-
-			await db.SaveChangesAsync();
 
 			return Results.Ok(product.AsDto());
 		})
@@ -79,14 +51,11 @@ public static class ProductEndpoints {
 		.WithParameterValidation()
 		.Produces<ProductDto>(StatusCodes.Status200OK);
 
-		products.MapDelete("/{id:int}", async (int id, ShopApiContext db) => {
-			var product = await db.Products.FindAsync(id);
-			if (product == null) {
+		products.MapDelete("/{id:int}", async (int id, DeleteProductHandler handler) => {
+			var success = await handler.Handle(id);
+			if (!success) {
 				return Results.NotFound(new { Message = $"Product with ID {id} not found." });
 			}
-
-			db.Products.Remove(product);
-			await db.SaveChangesAsync();
 
 			return Results.NoContent();
 		})
