@@ -7,7 +7,7 @@ namespace SampleShopApi.App.Entities.Cart;
 
 public class AddToCartCommand {
 	[Range(1, int.MaxValue)]
-	public required int ProductId { get; set; }
+	public required int AlbumId { get; set; }
 	[Range(1, int.MaxValue)]
 	public required int Quantity { get; set; }
 }
@@ -24,16 +24,16 @@ public class AddToCartHandler(ShopApiContext db, CartService cartService) {
 				return Result<Cart>.NotFound("Cart not found", new() { ["cartId"] = [$"No cart with Id {cartId.Value}"] });
 			}
 		}
-		var cartItemEntry = await cartService.GetItemByProductId(cart.Entity.Id, command.ProductId);
+		var cartItemEntry = await cartService.GetItemByAlbumId(cart.Entity.Id, command.AlbumId);
 
 		if (cartItemEntry is null) {
-			var product = await db.Products.FindAsync(command.ProductId);
-			if (product is null) {
-				return Result<Cart>.BadRequest("Product not found", new() { ["productId"] = ["The specified product does not exist."] });
+			var song = await db.Songs.FindAsync(command.AlbumId);
+			if (song is null) {
+				return Result<Cart>.BadRequest("Song not found", new() { ["songId"] = ["The specified song does not exist."] });
 			}
 			cart.Entity.Items.Add(new() {
 				CartId = cart.Entity.Id,
-				ProductId = command.ProductId,
+				AlbumId = command.AlbumId,
 				Quantity = command.Quantity,
 			});
 		}

@@ -1,7 +1,7 @@
 # Sample Shop API
 
 This is a small example shop API made in ASP.NET.
-It handles CRUD operations on products, as well as managing a cart session.
+It handles CRUD operations on songs, as well as managing a cart session.
 
 ## Usage
 

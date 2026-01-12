@@ -17,20 +17,20 @@ public class CartService(ShopApiContext db) {
 
 	public async Task<EntityEntry<Cart>?> GetById(int cartId) {
 		var cart = await db.Carts
-			.Include(c => c.Items)
-			.FirstAsync(c => c.Id == cartId);
+		  .Include(c => c.Items)
+		  .FirstAsync(c => c.Id == cartId);
 		if (cart is null) {
 			return null;
 		}
 		return db.Carts.Entry(cart);
 	}
 
-	public async Task<CartItem?> GetItemByProductId(int cartId, int productId) {
+	public async Task<CartItem?> GetItemByAlbumId(int cartId, int albumId) {
 		var cartItem = await db.CartItems
-			.FirstOrDefaultAsync(i =>
-				i.CartId == cartId
-				&& i.ProductId == productId
-			);
+		  .FirstOrDefaultAsync(i =>
+			i.CartId == cartId
+			&& i.AlbumId == albumId
+		  );
 		return cartItem;
 	}
 }

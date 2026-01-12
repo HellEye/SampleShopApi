@@ -1,13 +1,17 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using SampleShopApi.App.Entities.Albums;
+using SampleShopApi.App.Entities.Artists;
 using SampleShopApi.App.Entities.Cart;
-using SampleShopApi.App.Entities.Products;
+using SampleShopApi.App.Entities.Songs;
 namespace SampleShopApi.App.Data;
 
 public partial class ShopApiContext(DbContextOptions<ShopApiContext> options)
   : DbContext(options) {
 
-	public DbSet<Product> Products => Set<Product>();
+	public DbSet<Song> Songs => Set<Song>();
+	public DbSet<Album> Albums => Set<Album>();
+	public DbSet<Artist> Artists => Set<Artist>();
 	public DbSet<Cart> Carts => Set<Cart>();
 	public DbSet<CartItem> CartItems => Set<CartItem>();
 

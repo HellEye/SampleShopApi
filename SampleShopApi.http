@@ -2,16 +2,16 @@
 
 ### 
 
-GET {{SampleShopApi_HostAddress}}/products?sort=price&search=new
+GET {{SampleShopApi_HostAddress}}/songs?sort=price&search=new
 Accept: application/json
 
 ###
 
-POST {{SampleShopApi_HostAddress}}/products
+POST {{SampleShopApi_HostAddress}}/songs
 Content-Type: application/json
 
 {
-	"name": "New Product",
+	"name": "New Song",
 	"price": 9.99,
-	"description": "A brand new product"
+	"description": "A brand new song"
 }

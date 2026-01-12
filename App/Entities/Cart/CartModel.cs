@@ -1,5 +1,5 @@
 using App.Utils;
-using SampleShopApi.App.Entities.Products;
+using SampleShopApi.App.Entities.Albums;
 
 namespace SampleShopApi.App.Entities.Cart;
 
@@ -19,14 +19,14 @@ public class CartItem : ToDto<CartItemDto> {
 	public int Id { get; set; }
 	public required int Quantity { get; set; }
 
-	public required int ProductId { get; set; }
-	public Product Product { get; set; } = null!;
+	public required int AlbumId { get; set; }
+	public Album Album { get; set; } = null!;
 
 	public required int CartId { get; set; }
 	public Cart Cart { get; set; } = null!;
 
 	public CartItemDto AsDto() => new() {
-		Product = Product!.AsDto()!,
+		Album = Album!.AsDto()!,
 		Quantity = Quantity
 	};
 }
