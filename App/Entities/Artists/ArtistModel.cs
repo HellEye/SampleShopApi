@@ -16,7 +16,6 @@ public class Artist : ToDto<ArtistDto> {
 		  Name = Name,
 		  ArtistPhotoUrl = ArtistPhotoUrl,
 	  };
-
 }
 public record class ArtistDto {
 	public required int Id { get; set; }

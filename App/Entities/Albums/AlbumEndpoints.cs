@@ -1,3 +1,4 @@
+using MinimalApis.Extensions;
 using SampleShopApi.App.Queries;
 
 namespace SampleShopApi.App.Entities.Albums;
@@ -26,6 +27,7 @@ public static class AlbumEndpoints {
 		})
 		.WithName("GetAlbumById")
 		.WithDescription("Get an album by its ID")
+		.WithParameterValidation()
 		.Produces<AlbumDto>(StatusCodes.Status200OK)
 		.ProducesProblem(StatusCodes.Status404NotFound);
 	}
