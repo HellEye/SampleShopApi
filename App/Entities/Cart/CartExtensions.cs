@@ -3,7 +3,7 @@ namespace SampleShopApi.App.Entities.Cart;
 public static class CartExtensions {
 	public static void WithCartIdCookie(this HttpResponse response, int cartId) {
 		response.Cookies.Append("cartId", cartId.ToString(), new CookieOptions {
-			SameSite = SameSiteMode.Lax,
+			SameSite = SameSiteMode.None,
 			Expires = DateTimeOffset.UtcNow.AddDays(7),
 			Secure = false,
 		});
