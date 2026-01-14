@@ -24,3 +24,19 @@ public class DeleteFromCartHandler(ShopApiContext db) {
 		return Result<Cart>.Success(cart);
 	}
 }
+
+public class ClearCartHandler(ShopApiContext db) {
+	public async Task<Result<Cart>> Handle(int cartId) {
+		var cart = await db.Carts
+			.Include(c => c.Items)
+			.FirstOrDefaultAsync(c => c.Id == cartId);
+
+		if (cart is null) {
+			return Result<Cart>.NotFound("Cart not found", new() { ["cartId"] = [$"No cart with Id {cartId}"] });
+		}
+
+		db.CartItems.RemoveRange(cart.Items);
+		await db.SaveChangesAsync();
+		return Result<Cart>.Success(cart);
+	}
+}

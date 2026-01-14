@@ -7,6 +7,7 @@ public static class CartServiceRegistration {
 		services.AddScoped<AddToCartHandler>();
 		services.AddScoped<UpdateCartHandler>();
 		services.AddScoped<DeleteFromCartHandler>();
+		services.AddScoped<ClearCartHandler>();
 		services.AddHostedService<CartCleanupService>();
 
 		return services;

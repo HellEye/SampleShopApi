@@ -8,7 +8,7 @@ public record class AlbumListQuery : IPaginatedQuery, ISortParams, ISearchParams
 	public int? Page { get; set; } = 1;
 	public int? PageSize { get; set; } = 10;
 	public string? Sort { get; set; }
-	public Order? Order { get; set; } = Queries.Order.Asc;
+	public Order? Order { get; set; } = Queries.Order.asc;
 	public string? Search { get; set; }
 }
 
@@ -24,13 +24,13 @@ public class GetAlbumListHandler(ShopApiContext db) {
 }
 
 public class GetAlbumByIdHandler(ShopApiContext db) {
-	public async Task<AlbumDto?> HandleAsync(int id) {
+	public async Task<AlbumDtoWithSongs?> HandleAsync(int id) {
 		var album = await db.Albums
 			.Include(a => a.Artist)
 			.Include(a => a.Songs)
 			.FirstOrDefaultAsync(a => a.Id == id);
 
-		return album?.AsDto();
+		return album?.AsDtoWithSongs();
 	}
 }
 

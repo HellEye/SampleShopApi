@@ -5,8 +5,8 @@ using App.Exceptions;
 namespace SampleShopApi.App.Queries;
 
 public enum Order {
-	Asc,
-	Desc
+	asc,
+	desc
 }
 public interface ISortParams {
 	string? Sort { get; set; }
@@ -35,12 +35,11 @@ public static class SortingExtensions {
 
 		// Find the property with the Sortable attribute matching the sort field
 		var property = entityType.GetProperties()
-			.Where(prop => {
+			.FirstOrDefault(prop => {
 				var attr = prop.GetCustomAttribute<SortableAttribute>(true);
 				if (attr is null) return false;
 				return attr.FieldName.Equals(query.Sort, StringComparison.OrdinalIgnoreCase);
-			})
-			.FirstOrDefault();
+			});
 
 		if (property == null) {
 			throw ApiException.BadRequest($"Cannot sort by field '{query.Sort}'.");
@@ -50,7 +49,7 @@ public static class SortingExtensions {
 		var orderByProperty = Expression.Property(parameterExpression, property.Name);
 		var lambda = Expression.Lambda(orderByProperty, parameterExpression);
 		var genericMethod =
-		  query.Order == Order.Desc ?
+		  query.Order == Order.desc ?
 			OrderByDescendingMethod.MakeGenericMethod(typeof(T), orderByProperty.Type)
 		  : OrderByMethod.MakeGenericMethod(typeof(T), orderByProperty.Type);
 		var ret = genericMethod.Invoke(null, [source, lambda]);

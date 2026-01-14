@@ -9,10 +9,15 @@ public class Result<T> {
 	public Dictionary<string, string[]>? Errors { get; private set; }
 	public HttpStatusCode StatusCode { get; private set; }
 
-	public static Result<T> Success(T value) => new() {
+	public static Result<T> Success(T? value, HttpStatusCode statusCode = HttpStatusCode.OK) => new() {
 		IsSuccess = true,
 		Value = value,
-		StatusCode = HttpStatusCode.OK
+		StatusCode = statusCode
+	};
+
+	public static Result<T> Success(HttpStatusCode statusCode = HttpStatusCode.OK) => new() {
+		IsSuccess = true,
+		StatusCode = statusCode
 	};
 
 	public static Result<T> Failure(
@@ -56,4 +61,6 @@ public class Result<T> {
 		string title,
 		Dictionary<string, string[]>? errors = null) =>
 		Failure(title, HttpStatusCode.NotFound, errors);
+
+	public static Result<T> NoContent() => Success(HttpStatusCode.NoContent);
 }

@@ -29,4 +29,7 @@ public class CartItem : ToDto<CartItemDto> {
 		Album = Album!.AsDto()!,
 		Quantity = Quantity
 	};
+
+	public override string ToString() =>
+	  $"CartItem(Id={Id}, AlbumId={AlbumId}, Quantity={Quantity})";
 }

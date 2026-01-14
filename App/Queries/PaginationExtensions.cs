@@ -37,10 +37,9 @@ public static class PaginationExtensions {
 		var items = await source
 			.Skip((page - 1) * pageSize)
 			.Take(pageSize)
-			.Select(item => item.AsDto())
 			.ToListAsync();
 
 
-		return new(items, count, query);
+		return new([.. items.Where(i => i is not null).Select(item => item.AsDto())], count, query);
 	}
 }

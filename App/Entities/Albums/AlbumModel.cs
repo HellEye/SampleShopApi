@@ -11,7 +11,7 @@ public class Album : ToDto<AlbumDto> {
 	public required string Name { get; set; }
 	[Sortable("price")]
 	public required decimal Price { get; set; }
-	[Sortable("release_date")]
+	[Sortable("releaseYear")]
 	public required int ReleaseYear { get; set; }
 
 	public required int ArtistId { get; set; }
@@ -26,7 +26,16 @@ public class Album : ToDto<AlbumDto> {
 		  Price = Price,
 		  ReleaseYear = ReleaseYear,
 		  AlbumCoverUrl = AlbumCoverUrl,
-		  ArtistName = Artist.Name,
+		  ArtistName = Artist?.Name ?? string.Empty,
+	  };
+	public AlbumDtoWithSongs AsDtoWithSongs() =>
+	  new AlbumDtoWithSongs {
+		  Id = Id,
+		  Name = Name,
+		  Price = Price,
+		  ReleaseYear = ReleaseYear,
+		  AlbumCoverUrl = AlbumCoverUrl,
+		  ArtistName = Artist?.Name ?? string.Empty,
 		  Songs = [.. Songs.Select(s => s.AsDto())]
 	  };
 }
@@ -38,6 +47,10 @@ public record class AlbumDto {
 	public required int ReleaseYear { get; set; }
 	public required string AlbumCoverUrl { get; set; }
 	public required string ArtistName { get; set; }
+	// public ICollection<SongDto> Songs { get; set; } = new List<SongDto>();
+}
+
+public record class AlbumDtoWithSongs : AlbumDto {
 	public ICollection<SongDto> Songs { get; set; } = new List<SongDto>();
 }
 

@@ -46,10 +46,13 @@ public class AddToCartHandler(ShopApiContext db, CartService cartService) {
 		await db.SaveChangesAsync();
 		response.Cookies.Append("cartId", cart.Entity.Id.ToString(), new CookieOptions {
 			SameSite = SameSiteMode.Strict,
-			Expires = DateTimeOffset.UtcNow.AddDays(7)
+			Expires = DateTimeOffset.UtcNow.AddDays(7),
+			Secure = false,
 		});
+		response.Headers.Append("access-control-expose-headers", "Set-Cookie");
 
-
-		return Result<Cart>.Success(cart.Entity);
+		Console.WriteLine("========");
+		Console.WriteLine(cart.Entity.Items[0].Album);
+		return Result<Cart>.NoContent();
 	}
 }

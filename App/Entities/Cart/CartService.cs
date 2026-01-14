@@ -12,12 +12,14 @@ public class CartService(ShopApiContext db) {
 			CreatedAt = DateTime.UtcNow,
 			UpdatedAt = DateTime.UtcNow
 		});
+		await db.SaveChangesAsync();
 		return cart;
 	}
 
 	public async Task<EntityEntry<Cart>?> GetById(int cartId) {
 		var cart = await db.Carts
 		  .Include(c => c.Items)
+		  .ThenInclude(i => i.Album)
 		  .FirstAsync(c => c.Id == cartId);
 		if (cart is null) {
 			return null;
@@ -27,6 +29,7 @@ public class CartService(ShopApiContext db) {
 
 	public async Task<CartItem?> GetItemByAlbumId(int cartId, int albumId) {
 		var cartItem = await db.CartItems
+		.Include(c => c.Album)
 		  .FirstOrDefaultAsync(i =>
 			i.CartId == cartId
 			&& i.AlbumId == albumId
